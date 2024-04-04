@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Define the model for the 'employees' table
+model Employee {
+  emp_no     Int      @id
+  birth_date DateTime
+  first_name String
+  last_name  String
+  gender     Gender
+  hire_date  DateTime
+
+  // Define a relation with the 'titles' table
+  titles      Title[]
+  // Define a relation with the 'salaries' table
+  salaries    Salary[]
+  DeptManager DeptManager[]
+  DeptEmp     DeptEmp[]
+}
+
+// Define the model for the 'departments' table
+model Department {
+  dept_no   String @id @db.VarChar(4)
+  dept_name String @unique
+
+  // Define a relation with the 'dept_manager' table
+  dept_managers DeptManager[]
+  // Define a relation with the 'dept_emp' table
+  dept_emps     DeptEmp[]
+}
+
+// Define the model for the 'dept_manager' table
+model DeptManager {
+  emp_no    Int
+  dept_no   String
+  from_date DateTime
+  to_date   DateTime
+
+  // Define a relation with the 'employees' table
+  employee   Employee   @relation(fields: [emp_no], references: [emp_no])
+  // Define a relation with the 'departments' table
+  department Department @relation(fields: [dept_no], references: [dept_no])
+
+  @@id([emp_no, dept_no])
+}
+
+// Define the model for the 'dept_emp' table
+model DeptEmp {
+  emp_no    Int
+  dept_no   String
+  from_date DateTime
+  to_date   DateTime
+
+  // Define a relation with the 'employees' table
+  employee   Employee   @relation(fields: [emp_no], references: [emp_no])
+  // Define a relation with the 'departments' table
+  department Department @relation(fields: [dept_no], references: [dept_no])
+
+  @@id([emp_no, dept_no])
+}
+
+// Define the model for the 'titles' table
+model Title {
+  emp_no    Int
+  title     String
+  from_date DateTime
+  to_date   DateTime?
+
+  // Define a relation with the 'employees' table
+  employee Employee @relation(fields: [emp_no], references: [emp_no])
+
+  @@id([emp_no, title, from_date])
+}
+
+// Define the model for the 'salaries' table
+model Salary {
+  emp_no    Int
+  salary    Int
+  from_date DateTime
+  to_date   DateTime
+
+  // Define a relation with the 'employees' table
+  employee Employee @relation(fields: [emp_no], references: [emp_no])
+
+  @@id([emp_no, from_date])
+}
+
+// Define the enum for 'gender'
+enum Gender {
+  M
+  F
+}
