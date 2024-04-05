@@ -57,7 +57,7 @@
       "morgan": "^1.8.2",
       "mysql2": "^3.9.2",
       "pino-pretty": "^10.3.0",
-      "prisma": "^5.12.0",
+      "prisma": "^5.12.1",
       "razorpay": "^2.9.2",
       "redis": "^4.6.13",
       "reflect-metadata": "^0.1.13",

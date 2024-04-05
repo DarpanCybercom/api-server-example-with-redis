@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { OK } from "http-status/lib";
+import redisClient from "../../redis";
 import { HomeServices } from "./services";
 import { getAppInfoQuery } from "@/types/request/home";
 import { apiResponse } from "@/helpers/apiResponse";
-import redisClient from "../../redis";
 
 const getAppInfo = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,12 +27,13 @@ const getEmployeesInfo = async (
     const cachedData = await redisClient.get(req.originalUrl);
 
     if (cachedData) {
-      return res.status(OK).json(
+      res.status(OK).json(
         apiResponse({
           data: JSON.parse(cachedData),
           message: "Success Cache DATA",
         }),
       );
+      return;
     }
 
     const result = await HomeServices.getEmployeesInfo();

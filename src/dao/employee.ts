@@ -6,7 +6,7 @@ const getAll = async () => {
   try {
     // console.log(prisma, "Prisma");
     const users = await prisma.employee.findMany({
-      take: 10,
+      take: 5000,
     });
     return users;
   } catch (error) {
